@@ -3,17 +3,18 @@
 namespace dktapps\GitMOTD;
 
 use pocketmine\plugin\PluginBase;
-use pocketmine\utils\Utils;
+use pocketmine\utils\Process;
+use pocketmine\VersionInfo;
 
 class Main extends PluginBase{
 
 	public function onEnable() : void{
-		Utils::execute("git rev-parse --abbrev-ref HEAD", $branch);
+		Process::execute("git rev-parse --abbrev-ref HEAD", $branch);
 		assert(is_string($branch));
 		$branch = trim($branch);
 
-		$message = trim($branch) . "@" . substr(\pocketmine\GIT_COMMIT, 0, 8);
-		if(strrpos(\pocketmine\GIT_COMMIT, "-dirty") !== false){
+		$message = trim($branch) . "@" . substr(VersionInfo::GIT_HASH(), 0, 8);
+		if(strrpos(VersionInfo::GIT_HASH(), "-dirty") !== false){
 			$message .= "-dirty";
 		}
 		$this->getServer()->getNetwork()->setName($this->getServer()->getMotd() . " - $message");
